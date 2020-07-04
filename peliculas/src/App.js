@@ -7,7 +7,9 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      data: []
+      data: [],
+      searchTerm : '',
+      error: ''
     }
   }
 
@@ -19,10 +21,18 @@ class App extends Component {
 this.setState({data: resJSON.Search})
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault()
-    console.log('enviando...')
+    if(!this.state.searchTerm) {
+      return this.setState({error: 'Please write a valid value'})
+    }
+    const res = await fetch(`${API}&s=${this.state.searchTerm}`)
+    const data = await res.json()
 
+    if(!data.Search){
+      return this.setState({error: 'There are no fucking results'})
+    }
+    this.setState({data: data.Search, error:'', searchTerm:''})
   }
 
   render() {
@@ -30,17 +40,18 @@ this.setState({data: resJSON.Search})
       <>
     <div className="row">
       <div className="col-md-4 offset-md-4 p-4">
-      <form onSubmit={this.handleSubmit} >
+      <form onSubmit={(e) => this.handleSubmit(e)} >
       <input 
       type="text"
       className="form-control"
       placeholder="Search"
-      onChange={e => console.log(e.target.value)}
+      onChange={e => this.setState({searchTerm: e.target.value})}
+      value = {this.state.searchTerm}
       autoFocus
       />
 
       </form>
-
+      <p className="text-white">{this.state.error ? this.state.error : ''}</p>
       </div>
     </div>
       <div className="row">
