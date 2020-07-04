@@ -1,9 +1,11 @@
 import React from 'react'
 
-export default function Card() {
+export default function Card({movie}) {
     return (
         <div>
-            <p>Soy un card</p>
+            <img src={movie.Poster} alt={movie.Title} />
+            <h4>{movie.Title}{movie.Year}</h4>
+            <p>{movie.Type}</p>
         </div>
     )
 }
